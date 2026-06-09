@@ -1,4 +1,4 @@
-'CREATE DATABASE restaurante;
+CREATE DATABASE restaurante;
 
 USE restaurante;
 
@@ -25,4 +25,4 @@ CREATE TABLE item_venda (
 
     FOREIGN KEY (venda_id) REFERENCES venda(id),
     FOREIGN KEY (produto_id) REFERENCES produto(id)
-);'
+);
