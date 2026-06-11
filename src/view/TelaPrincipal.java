@@ -11,7 +11,7 @@ public class TelaPrincipal extends JFrame {
 
     public TelaPrincipal() {
 
-        setTitle("Sistema Restaurante Universitário");
+        setTitle("Sistema Ca");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
