@@ -115,4 +115,8 @@ public class Produto {
     public void setQuantidadeEstoque(int quantidadeEstoque) { this.quantidadeEstoque = quantidadeEstoque; }
     public String getCategoria()                { return categoria; }
     public void setCategoria(String categoria)  { this.categoria = categoria; }
+
+    public static List<Produto> getListaProdutos() {
+    return listaProdutos;
+}
 }
