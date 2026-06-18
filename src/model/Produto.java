@@ -4,20 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Produto {
-
-    // Atributos
     private int id;
     private String nome;
     private String descricao;
     private double preco;
     private int quantidadeEstoque;
-    private String categoria; // ex: "Laticínios", "Hortifruti", "Bebidas"...
-
-    // Lista estática que armazena todos os produtos cadastrados
+    private String categoria; 
     private static List<Produto> listaProdutos = new ArrayList<>();
     private static int contadorId = 1;
 
-    // Construtor
     public Produto(String nome, String descricao, double preco, int quantidadeEstoque, String categoria) {
         this.id = contadorId++;
         this.nome = nome;
@@ -27,18 +22,12 @@ public class Produto {
         this.categoria = categoria;
     }
 
-    // ========================
-    //        MÉTODOS
-    // ========================
-
-    // Adicionar produto à lista
     public static void adicionarProduto(String nome, String descricao, double preco, int quantidadeEstoque, String categoria) {
         Produto novo = new Produto(nome, descricao, preco, quantidadeEstoque, categoria);
         listaProdutos.add(novo);
         System.out.println("✅ Produto \"" + nome + "\" adicionado com sucesso! (ID: " + novo.getId() + ")");
     }
 
-    // Excluir produto pelo ID
     public static void excluirProduto(int id) {
         Produto encontrado = buscarPorId(id);
 
@@ -50,7 +39,6 @@ public class Produto {
         }
     }
 
-    // Editar produto pelo ID
     public static void editarProduto(int id, String novoNome, String novaDescricao, double novoPreco, int novaQuantidade, String novaCategoria) {
         Produto encontrado = buscarPorId(id);
 
@@ -66,7 +54,6 @@ public class Produto {
         }
     }
 
-    // Listar todos os produtos
     public static void listarProdutos() {
         if (listaProdutos.isEmpty()) {
             System.out.println("📭 Nenhum produto cadastrado.");
@@ -80,7 +67,6 @@ public class Produto {
         System.out.println("=============================================\n");
     }
 
-    // Método auxiliar — busca produto por ID
     private static Produto buscarPorId(int id) {
         for (Produto p : listaProdutos) {
             if (p.getId() == id) {
@@ -90,9 +76,6 @@ public class Produto {
         return null;
     }
 
-    // ========================
-    //    toString (exibição)
-    // ========================
     @Override
     public String toString() {
         return String.format(
@@ -101,9 +84,6 @@ public class Produto {
         );
     }
 
-    // ========================
-    //      GETTERS/SETTERS
-    // ========================
     public int getId()                          { return id; }
     public String getNome()                     { return nome; }
     public void setNome(String nome)            { this.nome = nome; }
