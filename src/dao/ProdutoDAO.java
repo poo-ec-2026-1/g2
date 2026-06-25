@@ -1,14 +1,3 @@
-package dao;
-
-import java.sql.SQLException;
-import java.util.List;
-
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-
-import database.DatabaseManager;
-import model.Produto;
-
 public class ProdutoDAO {
 
     private Dao<Produto, Integer> dao;
@@ -30,6 +19,12 @@ public class ProdutoDAO {
             throws SQLException {
 
         return dao.queryForAll();
+    }
+
+    public Produto buscarPorId(int id)
+            throws SQLException {
+
+        return dao.queryForId(id);
     }
 
     public void atualizar(Produto produto)
