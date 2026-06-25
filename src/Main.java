@@ -1,14 +1,25 @@
-import view.TelaPrincipal;
+package database;
 
-public class Main {
+import java.sql.SQLException;
 
-    public static void main(String[] args) {
+import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.support.ConnectionSource;
 
-        javax.swing.SwingUtilities.invokeLater(() -> {
+public class DatabaseManager {
 
-            TelaPrincipal tela = new TelaPrincipal();
-            tela.setVisible(true);
+    private static final String URL =
+        "jdbc:sqlite:ru.db";
 
-        });
+    private static ConnectionSource connection;
+
+    public static ConnectionSource getConnection()
+            throws SQLException {
+
+        if(connection == null) {
+            connection =
+                new JdbcConnectionSource(URL);
+        }
+
+        return connection;
     }
 }
