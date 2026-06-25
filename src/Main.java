@@ -1,4 +1,7 @@
 import database.CriarTabelas;
+import view.TelaPrincipal;
+
+import javax.swing.SwingUtilities;
 
 public class Main {
 
@@ -10,7 +13,12 @@ public class Main {
 
             System.out.println("Banco iniciado.");
 
-        } catch(Exception e) {
+            SwingUtilities.invokeLater(() -> {
+                new TelaPrincipal().setVisible(true);
+            });
+
+        } catch (Exception e) {
+
             e.printStackTrace();
         }
     }
