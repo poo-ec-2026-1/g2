@@ -1,14 +1,17 @@
-import view.TelaPrincipal;
+import database.CriarTabelas;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        javax.swing.SwingUtilities.invokeLater(() -> {
+        try {
 
-            TelaPrincipal tela = new TelaPrincipal();
-            tela.setVisible(true);
+            CriarTabelas.criar();
 
-        });
+            System.out.println("Banco iniciado.");
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 }
