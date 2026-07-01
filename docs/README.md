@@ -7,8 +7,11 @@ Sistema de Vendas – CA STORE
 Integrantes:
 
 PEDRO FERREIRA JUNQUEIRA DO VAL - Líder, testes, implementação do banco de dados e documentação
+
 ANA CLARA ALCANTARA BORBA DOS SANTOS - implementação do front end e tela principal
+
 DANIEL MENDONÇA DE MOURA FILHO - back-end (venda de produtos)
+
 TIAGO SOUSA GUIMARAES - back-end (cadastro, edição e exclusão de produtos)
 
 Professor:
