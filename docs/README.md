@@ -22,7 +22,7 @@ Data:
 
 1. Objetivo
 
-O sistema CA STORE foi desenvolvido em Java com o objetivo de facilitar o gerenciamento das vendas realizadas pelo Centro Acadêmico da universidade.
+O sistema Loja do CA foi desenvolvido em Java com o objetivo de facilitar o gerenciamento das vendas realizadas pelo Centro Acadêmico da universidade.
 
 O sistema permite cadastrar produtos, editar informações, excluir produtos, controlar o estoque e realizar vendas por meio de um carrinho de compras. Todas as informações são armazenadas em um banco de dados SQLite utilizando o framework ORMLite, garantindo persistência dos dados.
 
