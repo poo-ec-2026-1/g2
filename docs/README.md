@@ -1,1 +1,19 @@
-Documentação do projeto.
+UNIVERSIDADE FEDERAL DE GOIÁS
+
+Curso de Engenharia de Computação
+
+Sistema de Vendas – CA STORE
+
+Integrantes:
+
+Pedro Ferreira Junqueira do Val - Líder, testes, implementação do banco de dados e documentação
+...
+...
+...
+...
+
+Professor:
+...
+
+Data:
+...
