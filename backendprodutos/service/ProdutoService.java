@@ -1,86 +1,87 @@
-package com.castore.produtos.service;
+package service;
 
-import com.castore.produtos.model.Produto;
-import com.castore.produtos.repository.ProdutoRepositorio;
+import dao.ProdutoDAO;
+import model.Produto;
+import model.ProdutoException;
 
+import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 public class ProdutoService {
 
-    private final ProdutoRepositorio repositorio;
+    private final ProdutoDAO produtoDAO;
 
-    public ProdutoService(ProdutoRepositorio repositorio) {
-        this.repositorio = repositorio;
+    public ProdutoService() throws SQLException {
+        this.produtoDAO = new ProdutoDAO();
     }
 
-    public Produto cadastrarProduto(String nome, String descricao, double preco,
-                                     int quantidadeEstoque, String categoria) {
-        return cadastrarProduto(nome, descricao, preco, quantidadeEstoque, categoria, 0, 0.0, null);
+    public Produto cadastrar(String nome, String descricao, double preco, int quantidadeEstoque,
+                              String categoria, int qtdPromo, double precoPromo, String chavePix) throws SQLException {
+        validar(nome, preco, quantidadeEstoque, categoria);
+
+        Produto produto = new Produto(nome, descricao, preco, quantidadeEstoque, categoria);
+        produto.setQtdPromo(qtdPromo);
+        produto.setPrecoPromo(precoPromo);
+        produto.setChavePix(chavePix);
+
+        produtoDAO.inserir(produto);
+        return produto;
     }
 
-    public Produto cadastrarProduto(String nome, String descricao, double preco, int quantidadeEstoque,
-                                     String categoria, int qtdPromo, double precoPromo, String chavePix) {
-        validarDados(nome, preco, quantidadeEstoque, categoria);
-        Produto produto = new Produto(0, nome, descricao, preco, quantidadeEstoque,
-                categoria, qtdPromo, precoPromo, chavePix);
-        return repositorio.adicionar(produto);
-    }
+    public void editar(int id, String nome, String descricao, double preco, int quantidadeEstoque,
+                        String categoria, int qtdPromo, double precoPromo, String chavePix) throws SQLException {
+        validar(nome, preco, quantidadeEstoque, categoria);
 
-    public void editarProduto(int id, String novoNome, String novaDescricao, double novoPreco,
-                               int novaQuantidade, String novaCategoria) {
-        validarDados(novoNome, novoPreco, novaQuantidade, novaCategoria);
         Produto produto = buscarOuFalhar(id);
-        produto.setNome(novoNome);
-        produto.setDescricao(novaDescricao);
-        produto.setPreco(novoPreco);
-        produto.setQuantidadeEstoque(novaQuantidade);
-        produto.setCategoria(novaCategoria);
+        produto.setNome(nome);
+        produto.setDescricao(descricao);
+        produto.setPreco(preco);
+        produto.setQuantidadeEstoque(quantidadeEstoque);
+        produto.setCategoria(categoria);
+        produto.setQtdPromo(qtdPromo);
+        produto.setPrecoPromo(precoPromo);
+        produto.setChavePix(chavePix);
+
+        produtoDAO.atualizar(produto);
     }
 
-    public void excluirProduto(int id) {
+    public void excluir(int id) throws SQLException {
         buscarOuFalhar(id);
-        repositorio.remover(id);
+        produtoDAO.excluir(id);
     }
 
-    public Produto buscarPorId(int id) {
+    public Produto buscarPorId(int id) throws SQLException {
         return buscarOuFalhar(id);
     }
 
-    public List<Produto> listarProdutos() {
-        return repositorio.listarTodos();
+    public List<Produto> listar() throws SQLException {
+        return produtoDAO.listar();
     }
 
-    public List<Produto> listarPorCategoria(String categoria) {
-        return repositorio.listarPorCategoria(categoria);
+    public void atualizarEstoque(Produto produto) throws SQLException {
+        produtoDAO.atualizar(produto);
     }
 
-    public List<Produto> listarComEstoqueBaixo(int limite) {
-        return repositorio.listarTodos().stream()
-                .filter(p -> p.getQuantidadeEstoque() < limite)
-                .toList();
-    }
-
-    private Produto buscarOuFalhar(int id) {
-        Optional<Produto> encontrado = repositorio.buscarPorId(id);
-        if (encontrado.isEmpty()) {
-            throw new IllegalArgumentException("Produto com ID " + id + " não encontrado.");
+    private Produto buscarOuFalhar(int id) throws SQLException {
+        Produto produto = produtoDAO.buscarPorId(id);
+        if (produto == null) {
+            throw new ProdutoException("Produto com ID " + id + " não encontrado.");
         }
-        return encontrado.get();
+        return produto;
     }
 
-    private void validarDados(String nome, double preco, int quantidadeEstoque, String categoria) {
+    private void validar(String nome, double preco, int quantidadeEstoque, String categoria) {
         if (nome == null || nome.isBlank()) {
-            throw new IllegalArgumentException("O nome do produto não pode ser vazio.");
+            throw new ProdutoException("O nome do produto não pode ser vazio.");
         }
         if (preco < 0) {
-            throw new IllegalArgumentException("O preço não pode ser negativo.");
+            throw new ProdutoException("O preço não pode ser negativo.");
         }
         if (quantidadeEstoque < 0) {
-            throw new IllegalArgumentException("A quantidade em estoque não pode ser negativa.");
+            throw new ProdutoException("A quantidade em estoque não pode ser negativa.");
         }
         if (categoria == null || categoria.isBlank()) {
-            throw new IllegalArgumentException("A categoria não pode ser vazia.");
+            throw new ProdutoException("A categoria não pode ser vazia.");
         }
     }
 }
