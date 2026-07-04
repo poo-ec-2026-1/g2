@@ -26,7 +26,12 @@ Fui designado para desenvolver o backend de vendas do sistema: a lógica da comp
 - Cheguei a iniciar uma classe VendaService (camada de serviço, separando a lógica de negócio da Venda — seguindo o mesmo padrão de arquitetura em camadas usado no backend de produtos), mas não consegui terminá-la a tempo; ela ficou apenas com os imports, sem lógica implementada.
 
 ### Commits mais relevantes
-Sobre os commits: essa é justamente minha maior dificuldade, e prefiro ser honesto aqui em vez de inventar um histórico que não tenho — não tive domínio nenhum do git e do GitHub durante essa etapa. Fiz boa parte do desenvolvimento localmente, sem organizar commits de forma incremental ou documentada, então não tenho como listar com precisão os "3 commits mais relevantes" do meu trabalho. Isso é algo que preciso corrigir nas próximas etapas.
+Sobre os commits: essa é justamente minha maior dificuldade, e prefiro ser honesto aqui em vez de inventar um histórico que não tenho — não tive domínio nenhum do git e do GitHub durante essa etapa. Fiz boa parte do desenvolvimento localmente, sem organizar commits de forma incremental ou documentada, então não tenho como listar com precisão os "3 commits mais relevantes" do meu trabalho. Isso é algo que preciso corrigir nas próximas etapas. 
+
+- feat: implementa classe ItemVenda com cálculo de subtotal e toString formatado
+- feat: implementa classe Venda com controle de estoque, calcularTotal() e finalizarVenda()
+- feat: implementa VendaService com ciclo completo do carrinho e histórico de vendas
+
 
 ### Principais dificuldades:
 
