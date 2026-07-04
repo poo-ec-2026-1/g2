@@ -1,32 +1,28 @@
 package model;
 
+public class ItemVenda {
 
-public class ItemVenda{
 
-    //atributos
     private Produto produto;
     private int quantidade;
 
-    //construtor
-    public ItemVenda(Produto produto, int quantidade){
+    public ItemVenda(Produto produto, int quantidade) {
         this.produto = produto;
         this.quantidade = quantidade;
     }
-
-    //subtotal do item 
-    public double calcularSubtotal(){
-        return produto.getPreco() * quantidade;
+    public double calcularSubtotal() {
+        return produto.calcularPreco(quantidade);
     }
 
-    public Produto getProduto(){
+    public Produto getProduto() {
         return produto;
     }
 
-    public int getQuantidade(){
+    public int getQuantidade() {
         return quantidade;
     }
 
-    public void setQuantidade(int quantidade){
+    public void setQuantidade(int quantidade) {
         this.quantidade = quantidade;
     }
 
@@ -37,5 +33,4 @@ public class ItemVenda{
             produto.getNome(), quantidade, produto.getPreco(), calcularSubtotal()
         );
     }
-
 }
