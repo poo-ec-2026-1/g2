@@ -42,9 +42,13 @@ Sobre os commits: essa é justamente minha maior dificuldade, e prefiro ser hone
 
 - Além da parte de vendas, ajudei a equipe produzindo os diagramas do projeto: o diagrama de classes, o diagrama de sequência e o diagrama de casos de uso, que constam na documentação (docs/README.md) do sistema. Essa não era originalmente uma tarefa minha, mas assumi essa parte para ajudar a equipe a cumprir a exigência de modelagem inicial (Seção 4) pedida na etapa do projeto.
 
-- ## 4. Considerações gerais
+- ## 4. Considerações finais
   
 - O que aprendi: essa etapa me mostrou, na prática, o que significa modelar uma entidade de negócio em Java, não apenas guardar dados, mas representar um processo real (uma venda) com estados, regras e validações. Entender como Venda e ItemVenda se relacionam, como o cálculo do total depende do estado de cada item, e como uma ação (finalizar a venda) precisa disparar efeitos em outras partes do sistema (dar baixa no estoque) me deu uma noção mais clara de como pensar em orientação a objetos além da teoria de sala de aula.
 Ao mesmo tempo, essa etapa deixou evidente uma lacuna que preciso resolver: meu domínio de git e GitHub ainda é insuficiente para o ritmo de um projeto em equipe. Não é falta de vontade — é falta de prática mesmo, e isso me limitou tanto na organização do meu próprio progresso quanto na integração mais fluida com o código dos colegas.
 Trabalhos futuros pendentes: finalizar a camada de serviço (VendaService), que ficou apenas esboçada, separando a regra de negócio da entidade Venda; implementar a persistência das vendas no banco de dados, hoje ainda mantidas apenas em memória; e, principalmente, dedicar tempo para aprender de fato o fluxo básico do git (commits, branches, pull requests) antes da próxima etapa.
 Conclusão: entrego essa etapa com o sentimento de missão cumprida na parte técnica de vendas — não é um trabalho perfeito, mas é sólido e funcional dentro do que foi possível fazer. A maior lição, no entanto, não foi de código: foi perceber que dominar as ferramentas do ambiente de desenvolvimento é tão importante quanto escrever a lógica em si, e que essa é a minha principal prioridade de melhoria daqui pra frente.
+
+===
+
+* [Acessar a Gravação da apresentação](https://drive.google.com/file/d/1HxEe4ZKdE7sMRT4GRLeXm30mxTK3Ht7x/view?usp=sharing)
