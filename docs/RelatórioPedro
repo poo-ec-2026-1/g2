@@ -1,0 +1,78 @@
+Pedro Ferreira Junqueira
+
+Cargo atribuído: Desenvolvedor Backend – Banco de Dados e Persistência
+
+Fui responsável pela implementação da camada de persistência do sistema, realizando a integração entre a aplicação Java e o banco de dados. Minhas principais responsabilidades foram:
+
+* Configurar o banco de dados SQLite;
+* Integrar o projeto ao framework ORMLite;
+* Organizar o projeto utilizando Maven;
+* Desenvolver a classe `DatabaseManager`, responsável pela conexão com o banco de dados;
+* Desenvolver a classe `CriarTabelas`, responsável pela criação automática das tabelas;
+* Implementar a classe `ProdutoDAO`, responsável pelas operações de acesso aos dados (CRUD);
+* Adaptar a interface gráfica para utilizar o banco de dados em vez de listas armazenadas em memória.
+
+2. Contribuição de acordo com a atribuição
+
+Implementei toda a estrutura necessária para que o sistema passasse a utilizar um banco de dados SQLite como armazenamento permanente das informações.
+
+Configurei o framework ORMLite juntamente com o Maven, permitindo que as dependências fossem gerenciadas automaticamente e que a comunicação entre os objetos Java e o banco de dados ocorresse através de mapeamento objeto-relacional (ORM), eliminando a necessidade de escrever comandos SQL manualmente.
+
+Desenvolvi a classe `DatabaseManager`, responsável por criar e manter a conexão com o banco SQLite, além da classe `CriarTabelas`, que cria automaticamente as tabelas necessárias durante a inicialização da aplicação.
+
+Implementei a classe `ProdutoDAO`, responsável pelas operações de inserção, consulta, atualização e exclusão de produtos no banco de dados utilizando os métodos disponibilizados pelo ORMLite.
+
+Também adaptei a interface gráfica (`TelaPrincipal`) para que todas as operações de cadastro, edição, exclusão e listagem fossem realizadas diretamente no banco de dados através da camada DAO.
+
+Além disso, participei da migração completa do projeto para a estrutura padrão do Maven (`src/main/java`), organizando os pacotes e configurando corretamente o ambiente de desenvolvimento para toda a equipe.
+
+O QUE NÃO DEU PRA CUMPRIR:
+
+Não foi possível implementar a persistência das vendas no banco de dados durante esta etapa. Atualmente, apenas os produtos e seus estoques são armazenados de forma permanente, enquanto as vendas permanecem armazenadas em memória durante a execução do sistema.
+
+COMMITS MAIS RELEVANTES:
+
+* **feat:** integração do projeto com Maven e organização da estrutura padrão do projeto;
+* **feat:** implementação da conexão com SQLite utilizando ORMLite (`DatabaseManager` e `CriarTabelas`);
+* **feat:** implementação do `ProdutoDAO` e integração completa da interface gráfica com o banco de dados.
+
+ PRINCIPAIS DIFICULDADES:
+
+A principal dificuldade encontrada foi a configuração inicial do ambiente de desenvolvimento.
+
+Durante a implementação surgiram problemas relacionados à configuração do Maven, organização das dependências do projeto, configuração do Java Development Kit (JDK), reconhecimento das bibliotecas pelo Visual Studio Code e integração entre o GitHub e o ambiente local.
+
+Outro desafio foi compreender o funcionamento do ORMLite e adaptar um sistema inicialmente desenvolvido utilizando listas em memória para um modelo baseado em persistência de dados, garantindo que todas as operações fossem realizadas corretamente através do banco de dados.
+
+ 3. Contribuição além do atribuído
+
+Além das atividades relacionadas ao banco de dados, participei da reorganização da estrutura completa do projeto, migrando-o para o padrão Maven, corrigindo problemas de compilação, configurando o ambiente para execução em diferentes computadores e auxiliando na integração entre as classes responsáveis pelas vendas e a interface gráfica.
+
+Também colaborei na melhoria da interface principal, integrando o sistema de carrinho de compras à aplicação e adaptando o funcionamento para trabalhar corretamente com os produtos armazenados no banco de dados.
+
+ 4. Considerações finais
+
+O QUE APRENDI:
+Esta etapa permitiu aprofundar meus conhecimentos sobre persistência de dados em aplicações Java.
+
+Aprendi como utilizar o Maven para gerenciamento de dependências, como configurar um banco SQLite e como utilizar o ORMLite para realizar operações de banco de dados através de objetos Java, seguindo o conceito de mapeamento objeto-relacional (ORM).
+
+Também compreendi melhor a importância da separação em camadas (View, DAO, Model e Database), tornando o sistema mais organizado, reutilizável e de fácil manutenção.
+
+Outro aprendizado importante foi a utilização do GitHub durante o desenvolvimento em equipe, compreendendo melhor o processo de versionamento, commits, sincronização do repositório e organização do código.
+
+Trabalhos futuros pendentes
+
+Como melhorias futuras, pretende-se implementar a persistência completa das vendas utilizando ORMLite, criando tabelas específicas para vendas e itens de venda, além da geração de relatórios de vendas e histórico permanente das transações realizadas.
+
+Também poderá ser implementado um sistema de autenticação de usuários e melhorias na interface gráfica para tornar a utilização ainda mais intuitiva.
+
+ CONCLUSÃO:
+
+Considero que os objetivos atribuídos à minha parte do projeto foram alcançados com sucesso.
+
+Foi possível integrar completamente a aplicação ao banco de dados, tornando o armazenamento das informações permanente e permitindo que todas as operações de cadastro, consulta, atualização e exclusão fossem realizadas de forma segura e organizada.
+
+VIDEO DE APRESENTAÇÃO DO PROJETO:
+
+https://drive.google.com/file/d/1_eVOQZy1rRjiKDEphSLwBjltTMfSCwNK/view?usp=sharing
