@@ -5,12 +5,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Pedido fechado por um cliente, com data/hora e a lista de itens.
- * Corresponde ao objeto `payload` / `pedidoGerado` da versão original,
- * mas calculado inteiramente no lado do domínio Java (sem depender de
- * uma resposta de API para saber o total).
- */
 public class Pedido {
 
     private static final DateTimeFormatter FORMATO_DATA_HORA =
