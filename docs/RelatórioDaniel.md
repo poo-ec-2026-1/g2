@@ -3,6 +3,7 @@
 ## 1. Introdução
 
 Membro: Daniel Mendonça de Moura Filho
+
 Cargo atribuido: Desenvolvedor de Beckend - Venda
 
 ### 1. Atribuição de cargo e tarefas
