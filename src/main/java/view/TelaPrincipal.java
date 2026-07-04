@@ -1,16 +1,24 @@
 package view;
 
-import dao.ProdutoDAO;
+import controller.ProdutoController;
+import controller.VendaController;
+import model.GrupoPagamentoPix;
 import model.ItemVenda;
 import model.Produto;
-import model.Venda;
+import model.ProdutoException;
+import model.VendaException;
+import service.ProdutoService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Locale;
 
 public class TelaPrincipal extends JFrame {
+
+    private static final Locale PT_BR = Locale.forLanguageTag("pt-BR");
 
     private final Color PRIMARY = new Color(30, 41, 59);
     private final Color SUCCESS = new Color(22, 163, 74);
@@ -24,9 +32,22 @@ public class TelaPrincipal extends JFrame {
 
     private JLabel labelTotal;
 
-    private Venda vendaAtual = new Venda();
+    private final ProdutoController produtoController;
+    private final VendaController vendaController;
 
     public TelaPrincipal() {
+        ProdutoController produtoControllerTemp;
+        VendaController vendaControllerTemp;
+        try {
+            ProdutoService produtoService = new ProdutoService();
+            produtoControllerTemp = new ProdutoController(produtoService);
+            vendaControllerTemp = new VendaController(produtoService);
+        } catch (SQLException e) {
+            throw new RuntimeException("Não foi possível conectar ao banco de dados.", e);
+        }
+        this.produtoController = produtoControllerTemp;
+        this.vendaController = vendaControllerTemp;
+
         setTitle("CA STORE");
         setSize(1100, 700);
         setLocationRelativeTo(null);
@@ -104,7 +125,7 @@ public class TelaPrincipal extends JFrame {
         botoes.add(btnCarrinho);
 
         modeloProdutos = new DefaultTableModel(
-                new Object[]{"ID", "Nome", "Descrição", "Preço", "Estoque", "Categoria"}, 0
+                new Object[]{"ID", "Nome", "Descrição", "Preço", "Estoque", "Categoria", "Promoção"}, 0
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -219,18 +240,12 @@ public class TelaPrincipal extends JFrame {
             JTextField preco = new JTextField();
             JTextField estoque = new JTextField();
             JTextField categoria = new JTextField();
+            JTextField qtdPromo = new JTextField("0");
+            JTextField precoPromo = new JTextField("0");
+            JTextField chavePix = new JTextField();
 
-            JPanel painel = new JPanel(new GridLayout(0, 1, 8, 8));
-            painel.add(new JLabel("Nome:"));
-            painel.add(nome);
-            painel.add(new JLabel("Descrição:"));
-            painel.add(descricao);
-            painel.add(new JLabel("Preço:"));
-            painel.add(preco);
-            painel.add(new JLabel("Estoque:"));
-            painel.add(estoque);
-            painel.add(new JLabel("Categoria:"));
-            painel.add(categoria);
+            JPanel painel = montarFormularioProduto(nome, descricao, preco, estoque, categoria,
+                    qtdPromo, precoPromo, chavePix);
 
             int resultado = JOptionPane.showConfirmDialog(
                     this, painel, "Cadastrar Produto",
@@ -239,18 +254,21 @@ public class TelaPrincipal extends JFrame {
 
             if (resultado != JOptionPane.OK_OPTION) return;
 
-            Produto produto = new Produto(
+            produtoController.cadastrar(
                     nome.getText(),
                     descricao.getText(),
                     Double.parseDouble(preco.getText()),
                     Integer.parseInt(estoque.getText()),
-                    categoria.getText()
+                    categoria.getText(),
+                    parseIntOuZero(qtdPromo.getText()),
+                    parseDoubleOuZero(precoPromo.getText()),
+                    chavePix.getText().isBlank() ? null : chavePix.getText()
             );
-
-            new ProdutoDAO().inserir(produto);
 
             atualizarTabelaProdutos();
 
+        } catch (ProdutoException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Não foi possível cadastrar", JOptionPane.WARNING_MESSAGE);
         } catch (Exception e) {
             mostrarErro("Erro ao cadastrar produto", e);
         }
@@ -266,26 +284,19 @@ public class TelaPrincipal extends JFrame {
             }
 
             int id = (int) modeloProdutos.getValueAt(linha, 0);
-            ProdutoDAO dao = new ProdutoDAO();
-            Produto produto = dao.buscarPorId(id);
+            Produto produto = produtoController.buscarPorId(id);
 
             JTextField nome = new JTextField(produto.getNome());
             JTextField descricao = new JTextField(produto.getDescricao());
             JTextField preco = new JTextField(String.valueOf(produto.getPreco()));
             JTextField estoque = new JTextField(String.valueOf(produto.getQuantidadeEstoque()));
             JTextField categoria = new JTextField(produto.getCategoria());
+            JTextField qtdPromo = new JTextField(String.valueOf(produto.getQtdPromo()));
+            JTextField precoPromo = new JTextField(String.valueOf(produto.getPrecoPromo()));
+            JTextField chavePix = new JTextField(produto.getChavePix() != null ? produto.getChavePix() : "");
 
-            JPanel painel = new JPanel(new GridLayout(0, 1, 8, 8));
-            painel.add(new JLabel("Nome:"));
-            painel.add(nome);
-            painel.add(new JLabel("Descrição:"));
-            painel.add(descricao);
-            painel.add(new JLabel("Preço:"));
-            painel.add(preco);
-            painel.add(new JLabel("Estoque:"));
-            painel.add(estoque);
-            painel.add(new JLabel("Categoria:"));
-            painel.add(categoria);
+            JPanel painel = montarFormularioProduto(nome, descricao, preco, estoque, categoria,
+                    qtdPromo, precoPromo, chavePix);
 
             int resultado = JOptionPane.showConfirmDialog(
                     this, painel, "Editar Produto",
@@ -294,19 +305,48 @@ public class TelaPrincipal extends JFrame {
 
             if (resultado != JOptionPane.OK_OPTION) return;
 
-            produto.setNome(nome.getText());
-            produto.setDescricao(descricao.getText());
-            produto.setPreco(Double.parseDouble(preco.getText()));
-            produto.setQuantidadeEstoque(Integer.parseInt(estoque.getText()));
-            produto.setCategoria(categoria.getText());
-
-            dao.atualizar(produto);
+            produtoController.editar(
+                    id,
+                    nome.getText(),
+                    descricao.getText(),
+                    Double.parseDouble(preco.getText()),
+                    Integer.parseInt(estoque.getText()),
+                    categoria.getText(),
+                    parseIntOuZero(qtdPromo.getText()),
+                    parseDoubleOuZero(precoPromo.getText()),
+                    chavePix.getText().isBlank() ? null : chavePix.getText()
+            );
 
             atualizarTabelaProdutos();
 
+        } catch (ProdutoException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Não foi possível editar", JOptionPane.WARNING_MESSAGE);
         } catch (Exception e) {
             mostrarErro("Erro ao editar produto", e);
         }
+    }
+
+    private JPanel montarFormularioProduto(JTextField nome, JTextField descricao, JTextField preco,
+                                            JTextField estoque, JTextField categoria, JTextField qtdPromo,
+                                            JTextField precoPromo, JTextField chavePix) {
+        JPanel painel = new JPanel(new GridLayout(0, 1, 8, 8));
+        painel.add(new JLabel("Nome:"));
+        painel.add(nome);
+        painel.add(new JLabel("Descrição:"));
+        painel.add(descricao);
+        painel.add(new JLabel("Preço:"));
+        painel.add(preco);
+        painel.add(new JLabel("Estoque:"));
+        painel.add(estoque);
+        painel.add(new JLabel("Categoria:"));
+        painel.add(categoria);
+        painel.add(new JLabel("Qtd. p/ promoção (0 = sem promoção):"));
+        painel.add(qtdPromo);
+        painel.add(new JLabel("Preço promocional (do bloco):"));
+        painel.add(precoPromo);
+        painel.add(new JLabel("Chave Pix da categoria:"));
+        painel.add(chavePix);
+        return painel;
     }
 
     private void excluirProduto() {
@@ -329,10 +369,12 @@ public class TelaPrincipal extends JFrame {
 
             if (resposta != JOptionPane.YES_OPTION) return;
 
-            new ProdutoDAO().excluir(id);
+            produtoController.excluir(id);
 
             atualizarTabelaProdutos();
 
+        } catch (ProdutoException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Não foi possível excluir", JOptionPane.WARNING_MESSAGE);
         } catch (Exception e) {
             mostrarErro("Erro ao excluir produto", e);
         }
@@ -348,24 +390,19 @@ public class TelaPrincipal extends JFrame {
             }
 
             int id = (int) modeloProdutos.getValueAt(linha, 0);
-
-            Produto produto = new ProdutoDAO().buscarPorId(id);
+            Produto produto = produtoController.buscarPorId(id);
 
             String entrada = JOptionPane.showInputDialog(this, "Quantidade:");
 
             if (entrada == null) return;
 
             int quantidade = Integer.parseInt(entrada);
-
-            boolean sucesso = vendaAtual.adicionarItem(produto, quantidade);
-
-            if (!sucesso) {
-                JOptionPane.showMessageDialog(this, "Não foi possível adicionar o item.");
-                return;
-            }
+            vendaController.adicionarItem(produto, quantidade);
 
             atualizarTabelaCarrinho();
 
+        } catch (VendaException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Não foi possível adicionar", JOptionPane.WARNING_MESSAGE);
         } catch (Exception e) {
             mostrarErro("Erro ao adicionar ao carrinho", e);
         }
@@ -380,10 +417,12 @@ public class TelaPrincipal extends JFrame {
                 return;
             }
 
-            vendaAtual.removerItem(linha);
+            vendaController.removerItem(linha);
 
             atualizarTabelaCarrinho();
 
+        } catch (VendaException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Não foi possível remover", JOptionPane.WARNING_MESSAGE);
         } catch (Exception e) {
             mostrarErro("Erro ao remover item", e);
         }
@@ -391,54 +430,45 @@ public class TelaPrincipal extends JFrame {
 
     private void finalizarVenda() {
         try {
-            boolean sucesso = vendaAtual.finalizarVenda();
+            double totalFinalizado = vendaController.getVendaAtual().calcularTotal();
+            List<GrupoPagamentoPix> recibo = vendaController.finalizarVenda();
 
-            if (!sucesso) {
-                JOptionPane.showMessageDialog(this, "Não foi possível finalizar a venda.");
-                return;
-            }
-
-            ProdutoDAO dao = new ProdutoDAO();
-
-            for (ItemVenda item : vendaAtual.getItens()) {
-                dao.atualizar(item.getProduto());
-            }
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    String.format("Venda finalizada com sucesso!\nTotal: R$ %.2f", vendaAtual.getValorTotal())
-            );
-
-            vendaAtual = new Venda();
+            new TelaPagamento(this, recibo, totalFinalizado).setVisible(true);
 
             atualizarTabelaProdutos();
             atualizarTabelaCarrinho();
 
+        } catch (VendaException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Não foi possível finalizar", JOptionPane.WARNING_MESSAGE);
         } catch (Exception e) {
             mostrarErro("Erro ao finalizar venda", e);
         }
     }
 
     private void cancelarCarrinho() {
-        vendaAtual = new Venda();
+        vendaController.cancelarVenda();
         atualizarTabelaCarrinho();
     }
 
     private void atualizarTabelaProdutos() {
         try {
-            ProdutoDAO dao = new ProdutoDAO();
-            List<Produto> produtos = dao.listar();
+            List<Produto> produtos = produtoController.listar();
 
             modeloProdutos.setRowCount(0);
 
             for (Produto p : produtos) {
+                String promo = p.temPromocao()
+                        ? String.format(PT_BR, "Leve %d por R$ %.2f", p.getQtdPromo(), p.getPrecoPromo())
+                        : "-";
+
                 modeloProdutos.addRow(new Object[]{
                         p.getId(),
                         p.getNome(),
                         p.getDescricao(),
-                        String.format("R$ %.2f", p.getPreco()),
+                        String.format(PT_BR, "R$ %.2f", p.getPreco()),
                         p.getQuantidadeEstoque(),
-                        p.getCategoria()
+                        p.getCategoria(),
+                        promo
                 });
             }
 
@@ -450,18 +480,26 @@ public class TelaPrincipal extends JFrame {
     private void atualizarTabelaCarrinho() {
         modeloCarrinho.setRowCount(0);
 
-        for (ItemVenda item : vendaAtual.getItens()) {
+        for (ItemVenda item : vendaController.getVendaAtual().getItens()) {
             modeloCarrinho.addRow(new Object[]{
                     item.getProduto().getNome(),
                     item.getQuantidade(),
-                    String.format("R$ %.2f", item.getProduto().getPreco()),
-                    String.format("R$ %.2f", item.calcularSubtotal())
+                    String.format(PT_BR, "R$ %.2f", item.getProduto().getPreco()),
+                    String.format(PT_BR, "R$ %.2f", item.calcularSubtotal())
             });
         }
 
         labelTotal.setText(
-                String.format("Total: R$ %.2f", vendaAtual.calcularTotal())
+                String.format(PT_BR, "Total: R$ %.2f", vendaController.getVendaAtual().calcularTotal())
         );
+    }
+
+    private int parseIntOuZero(String texto) {
+        return (texto == null || texto.isBlank()) ? 0 : Integer.parseInt(texto);
+    }
+
+    private double parseDoubleOuZero(String texto) {
+        return (texto == null || texto.isBlank()) ? 0.0 : Double.parseDouble(texto);
     }
 
     private void mostrarErro(String mensagem, Exception e) {
